@@ -110,4 +110,27 @@ describe('YEPS response test', () => {
     expect(isTestFinished1).is.true;
     expect(isTestFinished2).is.true;
   });
+
+  it('should test response with stringify', async () => {
+    let isTestFinished1 = false;
+    let isTestFinished2 = false;
+
+    app.then(async (ctx) => {
+      isTestFinished1 = true;
+
+      return ctx.response.resolve({ message: 'Ok' });
+    });
+
+    await chai.request(server)
+      .get('/')
+      .send()
+      .then((res) => {
+        expect(res).to.have.status(200);
+        expect(res.text).to.be.equal('{"message":"Ok"}');
+        isTestFinished2 = true;
+      });
+
+    expect(isTestFinished1).is.true;
+    expect(isTestFinished2).is.true;
+  });
 });

@@ -17,7 +17,14 @@ module.exports = class {
 
     if (!this.ctx.res.finished) {
       debug('Response sending');
-      this.ctx.res.end(await data);
+
+      let res = await data;
+
+      if (typeof res !== 'string') {
+        res = JSON.stringify(res);
+      }
+
+      this.ctx.res.end(res);
     }
 
     return Promise.reject();
