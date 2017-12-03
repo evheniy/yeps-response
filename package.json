@@ -37,7 +37,8 @@
   },
   "homepage": "https://github.com/evheniy/yeps-response#readme",
   "files": [
-    "index.js"
+    "index.js",
+    "response.js"
   ],
   "engines": {
     "node": ">=8.9.0"
