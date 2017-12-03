@@ -9,7 +9,7 @@ module.exports = class {
     this.ctx = ctx;
   }
 
-  resolve(data) {
+  async resolve(data) {
     debug('Response data:');
     debug(data);
 
@@ -17,7 +17,7 @@ module.exports = class {
 
     if (!this.ctx.res.finished) {
       debug('Response sending');
-      this.ctx.res.end(data);
+      this.ctx.res.end(await data);
     }
 
     return Promise.reject();

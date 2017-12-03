@@ -86,4 +86,28 @@ describe('YEPS response test', () => {
     expect(isTestFinished2).is.true;
     expect(isTestFinished3).is.true;
   });
+
+  it('should test response with promise', async () => {
+    let isTestFinished1 = false;
+    let isTestFinished2 = false;
+
+    app.then(async (ctx) => {
+      isTestFinished1 = true;
+      const data = Promise.resolve('test');
+
+      return ctx.response.resolve(data);
+    });
+
+    await chai.request(server)
+      .get('/')
+      .send()
+      .then((res) => {
+        expect(res).to.have.status(200);
+        expect(res.text).to.be.equal('test');
+        isTestFinished2 = true;
+      });
+
+    expect(isTestFinished1).is.true;
+    expect(isTestFinished2).is.true;
+  });
 });
