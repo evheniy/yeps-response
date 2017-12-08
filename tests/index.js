@@ -133,4 +133,50 @@ describe('YEPS response test', () => {
     expect(isTestFinished1).is.true;
     expect(isTestFinished2).is.true;
   });
+
+  it('should test redirect with default parameters', async () => {
+    let isTestFinished1 = false;
+    let isTestFinished2 = false;
+
+    app.then(async (ctx) => {
+      isTestFinished1 = true;
+
+      return ctx.response.redirect();
+    });
+
+    await chai.request(server)
+      .get('/')
+      .send()
+      .catch((err) => {
+        expect(err).to.have.status(301);
+        expect(err.response.headers.location).to.be.equal('/');
+        isTestFinished2 = true;
+      });
+
+    expect(isTestFinished1).is.true;
+    expect(isTestFinished2).is.true;
+  });
+
+  it('should test redirect with parameters', async () => {
+    let isTestFinished1 = false;
+    let isTestFinished2 = false;
+
+    app.then(async (ctx) => {
+      isTestFinished1 = true;
+
+      return ctx.response.redirect('/test', 302);
+    });
+
+    await chai.request(server)
+      .get('/')
+      .send()
+      .catch((err) => {
+        expect(err).to.have.status(302);
+        expect(err.response.headers.location).to.be.equal('/test');
+        isTestFinished2 = true;
+      });
+
+    expect(isTestFinished1).is.true;
+    expect(isTestFinished2).is.true;
+  });
 });

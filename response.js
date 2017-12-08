@@ -9,7 +9,7 @@ module.exports = class {
     this.ctx = ctx;
   }
 
-  async resolve(data) {
+  async resolve(data = '') {
     debug('Response data:');
     debug(data);
 
@@ -28,5 +28,12 @@ module.exports = class {
     }
 
     return Promise.reject();
+  }
+
+  async redirect(url = '/', code = 301) {
+    this.ctx.res.statusCode = code;
+    this.ctx.res.setHeader('Location', url);
+
+    return this.resolve();
   }
 };
