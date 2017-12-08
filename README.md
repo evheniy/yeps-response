@@ -98,5 +98,19 @@
     
     server.createHttpServer(app);
 
+### Redirect
+
+    app.then(async (ctx) => {
+      return ctx.response.redirect(url = '/', code = 301);
+    });
+
+### Custom redirect
+
+    app.then(async (ctx) => {
+      const response = new Response(ctx);
+
+      return response.redirect(url = '/', code = 301);
+    });
+
 
 #### [YEPS documentation](http://yeps.info/)

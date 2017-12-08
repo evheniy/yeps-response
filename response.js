@@ -1,4 +1,5 @@
 const debug = require('debug')('yeps:response:response');
+const { STATUS_CODES } = require('http');
 
 debug('Response created');
 
@@ -18,12 +19,35 @@ module.exports = class {
     if (!this.ctx.res.finished) {
       debug('Response sending');
 
-      let res = await data;
+      let res;
+
+      try {
+        res = await data;
+
+        if (data instanceof Error) {
+          throw data;
+        }
+      } catch (err) {
+        debug('Error:');
+        debug(err);
+
+        const code = err.code || 500;
+        debug('Code:', code);
+
+        const message = err.message || STATUS_CODES[500];
+        debug('Message:', message);
+
+        res = message;
+        this.ctx.res.statusCode = code;
+      }
+
+      debug('Type:', typeof res);
 
       if (typeof res !== 'string') {
         res = JSON.stringify(res);
       }
 
+      debug('Finishing...');
       this.ctx.res.end(res);
     }
 
