@@ -26,6 +26,8 @@
 
 ## How to use
 
+You can put any type of response data: value, promise, error.
+
 ### Without response
 
     const App = require('yeps');
@@ -110,6 +112,14 @@
       const response = new Response(ctx);
 
       return response.redirect(url = '/', code = 301);
+    });
+
+### Reject
+
+If you need to send request and finish response
+
+    app.then(async (ctx) => {
+      return ctx.response.reject(data);
     });
 
 
