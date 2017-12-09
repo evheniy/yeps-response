@@ -180,7 +180,7 @@ describe('YEPS response test', () => {
     expect(isTestFinished2).is.true;
   });
 
-  it('should test error', async () => {
+  it('should test error resolve', async () => {
     let isTestFinished1 = false;
     let isTestFinished2 = false;
     let isTestFinished3 = false;
@@ -210,11 +210,11 @@ describe('YEPS response test', () => {
 
     expect(isTestFinished1).is.true;
     expect(isTestFinished2).is.false;
-    expect(isTestFinished3).is.false;
+    expect(isTestFinished3).is.true;
     expect(isTestFinished4).is.true;
   });
 
-  it('should test error', async () => {
+  it('should test error resolve with error', async () => {
     let isTestFinished1 = false;
     let isTestFinished2 = false;
     let isTestFinished3 = false;
@@ -224,6 +224,72 @@ describe('YEPS response test', () => {
       isTestFinished1 = true;
 
       return ctx.response.resolve(new Error());
+    });
+    app.then(async () => {
+      isTestFinished2 = true;
+    });
+    app.catch(async () => {
+      isTestFinished3 = true;
+    });
+
+    await chai.request(server)
+      .get('/')
+      .send()
+      .catch((err) => {
+        expect(err).to.have.status(500);
+        isTestFinished4 = true;
+      });
+
+    expect(isTestFinished1).is.true;
+    expect(isTestFinished2).is.false;
+    expect(isTestFinished3).is.true;
+    expect(isTestFinished4).is.true;
+  });
+
+  it('should test error reject', async () => {
+    let isTestFinished1 = false;
+    let isTestFinished2 = false;
+    let isTestFinished3 = false;
+    let isTestFinished4 = false;
+
+    app.then(async (ctx) => {
+      isTestFinished1 = true;
+
+      const err = Promise.reject(new Error());
+
+      return ctx.response.reject(err);
+    });
+    app.then(async () => {
+      isTestFinished2 = true;
+    });
+    app.catch(async () => {
+      isTestFinished3 = true;
+    });
+
+    await chai.request(server)
+      .get('/')
+      .send()
+      .catch((err) => {
+        expect(err).to.have.status(500);
+        isTestFinished4 = true;
+      });
+
+    expect(isTestFinished1).is.true;
+    expect(isTestFinished2).is.false;
+    expect(isTestFinished3).is.false;
+    expect(isTestFinished4).is.true;
+  });
+
+  it('should test error reject with error', async () => {
+    let isTestFinished1 = false;
+    let isTestFinished2 = false;
+    let isTestFinished3 = false;
+    let isTestFinished4 = false;
+
+    app.then(async (ctx) => {
+      isTestFinished1 = true;
+
+      return ctx.response.reject(new Error());
     });
     app.then(async () => {
       isTestFinished2 = true;

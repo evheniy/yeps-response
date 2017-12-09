@@ -19,26 +19,10 @@ module.exports = class {
     if (!this.ctx.res.finished) {
       debug('Response sending');
 
-      let res;
+      let res = await data;
 
-      try {
-        res = await data;
-
-        if (data instanceof Error) {
-          throw data;
-        }
-      } catch (err) {
-        debug('Error:');
-        debug(err);
-
-        const code = err.code || 500;
-        debug('Code:', code);
-
-        const message = err.message || STATUS_CODES[500];
-        debug('Message:', message);
-
-        res = message;
-        this.ctx.res.statusCode = code;
+      if (data instanceof Error) {
+        throw data;
       }
 
       debug('Type:', typeof res);
@@ -50,6 +34,34 @@ module.exports = class {
       debug('Finishing...');
       this.ctx.res.end(res);
     }
+
+    return Promise.reject();
+  }
+
+  async reject(data) {
+    debug('Rejecting');
+
+    let res;
+
+    try {
+      debug('Getting data');
+      res = await this.resolve(data);
+    } catch (err) {
+      debug('Error:');
+      debug(err);
+
+      const code = err.code || 500;
+      debug('Code:', code);
+
+      const message = err.message || STATUS_CODES[500];
+      debug('Message:', message);
+
+      res = message;
+      this.ctx.res.statusCode = code;
+    }
+
+    debug('Finishing...');
+    this.ctx.res.end(res);
 
     return Promise.reject();
   }
